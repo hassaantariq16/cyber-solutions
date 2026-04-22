@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cyber-solutions-service
+  labels:
+    app: cyber-solutions
+spec:
+  type: LoadBalancer
+  selector:
+    app: cyber-solutions
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000

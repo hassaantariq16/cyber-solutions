@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Build output
+.next
+out
+build
+
+# Version control
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose*
+.dockerignore
+
+# IDE & OS
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Documentation & misc
+docs
+k8s
+*.md
+README*
+LICENSE
+
+# Environment files
+.env*.local
+.env
+
+# TypeScript build info
+*.tsbuildinfo

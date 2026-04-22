@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+
+:root {
+  --background: #000000;
+  --foreground: #ededed;
+  --primary-accent: #54f4fc;
+  --footer-line: #424242;
+  --navbar-accent: #54F4FC;
+  --white: #ffffff;
+  --black: #000000;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: #000000;
+  color: var(--foreground);
+  font-family: var(--font-montserrat), Helvetica, sans-serif;
+}
+
+/* Force blog content to be white */
+.blog-content,
+.blog-content *,
+.blog-content p,
+.blog-content div,
+.blog-content span,
+[data-blog-content],
+[data-blog-content] *,
+[data-blog-content] p,
+[data-blog-content] div,
+[data-blog-content] span {
+  color: #ffffff !important;
+}
+
+.service-card {
+  transition: transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s cubic-bezier(.4,2,.6,1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  background: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  color: #222;
+  display: block;
+  will-change: transform;
+}
+.service-card:hover {
+  transform: scale(1.045);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+}
