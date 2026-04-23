@@ -11,10 +11,12 @@
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-slot": "^1.2.3",
+    "@tailwindcss/postcss": "^4.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "mongoose": "^8.15.1",
     "next": "^15.3.5",
+    "postcss": "^8.5.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "suneditor-react": "^3.6.1",
