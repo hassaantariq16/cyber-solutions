@@ -22,7 +22,7 @@ spec:
             - containerPort: 3000
           env:
             - name: MONGODB_URI
-              value: "mongodb+srv://cybersolution:cyber1234@cluster0.lmjy4h1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+              value: "mongodb+srv://cybersolution:<YOUR_PASSWORD>@cluster0.lmjy4h1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
             - name: NODE_ENV
               value: "production"
           resources:
