@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-frontend
+  labels:
+    app: cyber-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cyber-frontend
+  template:
+    metadata:
+      labels:
+        app: cyber-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: <DOCKER_REGISTRY>/cyber-frontend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_API_URL
+              value: "http://cyber-backend-service:5000/api"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

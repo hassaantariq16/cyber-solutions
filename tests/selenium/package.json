@@ -1,0 +1,11 @@
+{
+  "name": "cyber-tests",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node test_all.js"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.12.0",
+    "node-fetch": "^3.4.1"
+  }
+}

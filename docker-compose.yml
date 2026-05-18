@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  mongo:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    container_name: cyber-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: cyberdb
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - cyber-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cyber-backend
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/cyberdb
+    ports:
+      - "5000:5000"
+    networks:
+      - cyber-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: cyber-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000/api
+    ports:
+      - "3000:3000"
+    networks:
+      - cyber-network
+
+volumes:
+  mongo-data:
+
+networks:
+  cyber-network:
+    driver: bridge
+

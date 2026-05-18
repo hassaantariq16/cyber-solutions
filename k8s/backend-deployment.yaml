@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cyber-backend
+  labels:
+    app: cyber-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cyber-backend
+  template:
+    metadata:
+      labels:
+        app: cyber-backend
+    spec:
+      containers:
+        - name: backend
+          image: <DOCKER_REGISTRY>/cyber-backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://cyber-mongo:27017/cyberdb"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

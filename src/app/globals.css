@@ -9,6 +9,9 @@
   --navbar-accent: #54F4FC;
   --white: #ffffff;
   --black: #000000;
+  --font-montserrat: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-archivo: 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-lato: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 @theme inline {

@@ -1,0 +1,2 @@
+FROM mongo:6.0
+# Use official MongoDB image; init scripts can be added to /docker-entrypoint-initdb.d
