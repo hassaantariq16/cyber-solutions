@@ -1,123 +1,76 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import BlogModel from '@/models/Blog';
-import { BlogSchema } from '@/lib/validations';
 
-// Cast to any to fix Mongoose 8 type compatibility with strict TypeScript
-const Blog: any = BlogModel;
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
-// GET - Fetch blog by slug
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    await dbConnect();
     const { slug } = await context.params;
+    const targetUrl = `${BACKEND_URL}/api/blogs/${slug}`;
+    console.log(`[Proxy] GET by slug to backend: ${targetUrl}`);
     
-    const blog = await Blog.findOne({ slug: slug });
-    
-    if (!blog) {
-      return NextResponse.json(
-        { success: false, error: 'Blog not found' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      data: blog
-    });
+    const response = await fetch(targetUrl);
+    const data = await response.json();
+    return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error('Error fetching blog:', error);
+    console.error('Error in proxy GET blog by slug:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch blog' },
+      { success: false, error: 'Failed to connect to backend service' },
       { status: 500 }
     );
   }
 }
 
-// PUT - Update blog by slug
 export async function PUT(
   request: NextRequest,
   context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    await dbConnect();
     const { slug } = await context.params;
-    
     const body = await request.json();
-    
-    // Validate the request body
-    const validatedData = BlogSchema.parse(body);
-    
-    // Generate new slug if title changed
-    let newSlug = slug;
-    if (validatedData.title) {
-      newSlug = validatedData.title
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim();
-    }
-    
-    const updatedBlog = await Blog.findOneAndUpdate(
-      { slug: slug },
-      { 
-        ...validatedData,
-        slug: newSlug,
-        updatedAt: new Date()
-      },
-      { new: true }
-    );
-    
-    if (!updatedBlog) {
-      return NextResponse.json(
-        { success: false, error: 'Blog not found' },
-        { status: 404 }
-      );
-    }
+    const targetUrl = `${BACKEND_URL}/api/blogs/${slug}`;
+    console.log(`[Proxy] PUT to backend: ${targetUrl}`);
 
-    return NextResponse.json({
-      success: true,
-      data: updatedBlog
+    const response = await fetch(targetUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
     });
+    
+    const data = await response.json();
+    return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error('Error updating blog:', error);
+    console.error('Error in proxy PUT blog:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to update blog' },
+      { success: false, error: 'Failed to connect to backend service' },
       { status: 500 }
     );
   }
 }
 
-// DELETE - Delete blog by slug
 export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    await dbConnect();
     const { slug } = await context.params;
-    
-    const deletedBlog = await Blog.findOneAndDelete({ slug: slug });
-    
-    if (!deletedBlog) {
-      return NextResponse.json(
-        { success: false, error: 'Blog not found' },
-        { status: 404 }
-      );
-    }
+    const targetUrl = `${BACKEND_URL}/api/blogs/${slug}`;
+    console.log(`[Proxy] DELETE to backend: ${targetUrl}`);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Blog deleted successfully'
+    const response = await fetch(targetUrl, {
+      method: 'DELETE',
     });
+    
+    const data = await response.json();
+    return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error('Error deleting blog:', error);
+    console.error('Error in proxy DELETE blog:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to delete blog' },
+      { success: false, error: 'Failed to connect to backend service' },
       { status: 500 }
     );
   }

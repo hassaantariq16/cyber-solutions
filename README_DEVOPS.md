@@ -23,10 +23,12 @@ npm test
 
 CI/CD:
 - Workflow file: .github/workflows/ci-cd.yml
+- Triggered on push and pull_request for the main branches
 - Configure GitHub secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `KUBECONFIG`
 
 AKS:
 - Manifests under `k8s/` (frontend/backend/mongo). Update image tags and `<DOCKER_REGISTRY>` placeholders before deploying.
+- The frontend deployment must include `BACKEND_URL=http://cyber-backend-service:5000`
 
 Packaging:
 - Use `zip_submission.ps1` to create the final zip (pass your RegNo as first argument).

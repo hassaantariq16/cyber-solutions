@@ -4,8 +4,8 @@ A full-stack cybersecurity company website with blog management system.
 
 ## Tech Stack
 - **Frontend**: Next.js 15, React 19, Tailwind CSS 4
-- **Backend**: Next.js API Routes (REST API)
-- **Database**: MongoDB Atlas (Mongoose ODM)
+- **Backend**: Node.js + Express REST API
+- **Database**: MongoDB (Mongoose ODM)
 - **Editor**: SunEditor (WYSIWYG Rich Text)
 - **Validation**: Zod
 
@@ -18,21 +18,21 @@ A full-stack cybersecurity company website with blog management system.
 
 ## Docker
 ```bash
-# Build
-docker build -t hassaan8345/cyber-solutions:fa23-bcs-118 .
-
-# Run
-docker run -p 3000:3000 -e MONGODB_URI="your-mongodb-uri" hassaan8345/cyber-solutions:fa23-bcs-118
+docker compose up --build
 ```
 
 ## Kubernetes
 ```bash
-kubectl apply -f k8s/deployment.yaml
-kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/mongo-statefulset.yaml
+kubectl apply -f k8s/backend-service.yaml
+kubectl apply -f k8s/backend-deployment.yaml
+kubectl apply -f k8s/frontend-service.yaml
+kubectl apply -f k8s/frontend-deployment.yaml
 ```
 
 ## Docker Hub
-Image: `hassaan8345/cyber-solutions:fa23-bcs-118`
+Frontend image: `hassaan8345/cyber-solutions:fa23-bcs-118`
+Backend image is built from [backend/Dockerfile](backend/Dockerfile) during the pipeline.
 
 ## Author
 Hassaan Tariq - FA23-BCS-118

@@ -5,7 +5,10 @@
     "test": "node test_all.js"
   },
   "dependencies": {
-    "selenium-webdriver": "^4.12.0",
-    "node-fetch": "^3.4.1"
+    "node-fetch": "^3.3.2",
+    "selenium-webdriver": "^4.44.0"
+  },
+  "devDependencies": {
+    "markdown-pdf": "^11.0.0"
   }
 }

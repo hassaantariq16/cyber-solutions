@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 async function runTest() {
   const base = process.env.TARGET_URL || 'http://localhost:5000';
   const url = `${base}/api/blogs`;

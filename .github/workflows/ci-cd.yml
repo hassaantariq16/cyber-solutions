@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install frontend deps
         working-directory: ./
@@ -24,29 +24,39 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      - name: Run frontend lint
-        run: npm run lint || true
-
-      - name: Setup Node for Selenium tests
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
       - name: Install Selenium test deps
+        working-directory: ./tests/selenium
+        run: npm ci
+
+      - name: Start multi-service stack
+        run: docker compose up -d --build
+
+      - name: Wait for services
         run: |
-          cd tests/selenium
-          npm ci
+          for i in {1..30}; do
+            if curl -fsS http://localhost:5000/health >/dev/null && curl -fsS http://localhost:3000 >/dev/null; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Services did not become ready in time"
+          docker compose logs --no-color
+          exit 1
 
       - name: Run Selenium tests
-        run: |
-          cd tests/selenium
-          TARGET_URL=http://localhost:3000 npm test
+        working-directory: ./tests/selenium
+        run: TARGET_URL=http://localhost:3000 npm test
         env:
           CI: true
+
+      - name: Stop services
+        if: always()
+        run: docker compose down -v
 
   docker-build-and-push:
     runs-on: ubuntu-latest
     needs: build-and-test
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
 
@@ -82,6 +92,7 @@ jobs:
   deploy-to-aks:
     runs-on: ubuntu-latest
     needs: docker-build-and-push
+    if: github.event_name == 'push'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -98,7 +109,15 @@ jobs:
           echo "$KUBECONFIG_DATA" | base64 --decode > kubeconfig
           export KUBECONFIG=$PWD/kubeconfig
 
+      - name: Replace Docker Registry Placeholder
+        run: |
+          sed -i 's|<DOCKER_REGISTRY>|${{ secrets.DOCKERHUB_USERNAME }}|g' k8s/frontend-deployment.yaml
+          sed -i 's|<DOCKER_REGISTRY>|${{ secrets.DOCKERHUB_USERNAME }}|g' k8s/backend-deployment.yaml
+
       - name: Deploy to AKS
         run: |
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/mongo-statefulset.yaml
+          kubectl apply -f k8s/backend-service.yaml
+          kubectl apply -f k8s/backend-deployment.yaml
+          kubectl apply -f k8s/frontend-service.yaml
+          kubectl apply -f k8s/frontend-deployment.yaml
