@@ -27,8 +27,11 @@ CI/CD:
 - Configure GitHub secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `KUBECONFIG`
 
 AKS:
-- Manifests under `k8s/` (frontend/backend/mongo). Update image tags and `<DOCKER_REGISTRY>` placeholders before deploying.
-- The frontend deployment must include `BACKEND_URL=http://cyber-backend-service:5000`
+- Resource group: `cyber-solutions-rg-poland`
+- Cluster: `cyber-solutions-cluster`
+- Public frontend URL: `http://134.112.161.154`
+- Manifests under `k8s/` deploy MongoDB, backend, and frontend from Docker Hub.
+- The frontend deployment includes `BACKEND_URL=http://cyber-backend-service:5000`
 
 Packaging:
 - Use `zip_submission.ps1` to create the final zip (pass your RegNo as first argument).

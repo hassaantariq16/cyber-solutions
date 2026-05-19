@@ -6,10 +6,12 @@ import Link from 'next/link';
 interface Blog {
   _id: string;
   title: string;
-  excerpt: string;
+  content?: string;
+  excerpt?: string;
   author: string;
   published: boolean;
-  tags: string[];
+  slug?: string;
+  tags?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -51,7 +53,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit, onDelete, onTogglePublish }
         setTotalPages(data.data.pagination.totalPages);
         
         // Extract unique tags
-        const tags = [...new Set(data.data.blogs.flatMap((blog: Blog) => blog.tags))] as string[];
+        const tags = [...new Set(data.data.blogs.flatMap((blog: Blog) => blog.tags || []))] as string[];
         setAllTags(tags);
       } else {
         setError(data.error || 'Failed to fetch blogs');
@@ -74,20 +76,20 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit, onDelete, onTogglePublish }
     fetchBlogs(1, searchTerm, filterPublished, selectedTag);
   };
 
-  const handleDelete = async (blogId: string) => {
+  const handleDelete = async (blogSlug: string) => {
     if (!confirm('Are you sure you want to delete this blog?')) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/blogs/${blogId}`, {
+      const response = await fetch(`/api/blogs/${blogSlug}`, {
         method: 'DELETE',
       });
 
       const data = await response.json();
 
       if (data.success) {
-        onDelete(blogId);
+        onDelete(blogSlug);
         fetchBlogs(currentPage, searchTerm, filterPublished, selectedTag);
       } else {
         alert(data.error || 'Failed to delete blog');
@@ -98,9 +100,9 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit, onDelete, onTogglePublish }
     }
   };
 
-  const handleTogglePublish = async (blogId: string, currentPublished: boolean) => {
+  const handleTogglePublish = async (blogSlug: string, currentPublished: boolean) => {
     try {
-      const response = await fetch(`/api/blogs/${blogId}`, {
+      const response = await fetch(`/api/blogs/${blogSlug}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -111,7 +113,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit, onDelete, onTogglePublish }
       const data = await response.json();
 
       if (data.success) {
-        onTogglePublish(blogId, !currentPublished);
+        onTogglePublish(blogSlug, !currentPublished);
         fetchBlogs(currentPage, searchTerm, filterPublished, selectedTag);
       } else {
         alert(data.error || 'Failed to update blog');
@@ -247,13 +249,13 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit, onDelete, onTogglePublish }
                     <td className="px-6 py-4">
                       <div>
                         <Link
-                          href={`/blogs/${blog._id}`}
+                          href={`/blogs/${blog.slug || blog._id}`}
                           className="text-sm font-medium text-blue-600 hover:text-blue-900 truncate max-w-xs block"
                         >
                           {blog.title}
                         </Link>
                         <div className="text-sm text-gray-500 truncate max-w-xs">
-                          {blog.excerpt}
+                          {blog.excerpt || blog.content?.replace(/<[^>]*>/g, '').slice(0, 120)}
                         </div>
                       </div>
                     </td>
@@ -273,7 +275,7 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit, onDelete, onTogglePublish }
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
-                        {blog.tags.slice(0, 2).map((tag) => (
+                        {(blog.tags || []).slice(0, 2).map((tag) => (
                           <span
                             key={tag}
                             className="inline-flex px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full"
@@ -281,9 +283,9 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit, onDelete, onTogglePublish }
                             {tag}
                           </span>
                         ))}
-                        {blog.tags.length > 2 && (
+                        {(blog.tags || []).length > 2 && (
                           <span className="text-xs text-gray-500">
-                            +{blog.tags.length - 2} more
+                            +{(blog.tags || []).length - 2} more
                           </span>
                         )}
                       </div>
@@ -300,13 +302,13 @@ const BlogList: React.FC<BlogListProps> = ({ onEdit, onDelete, onTogglePublish }
                           Edit
                         </button>
                         <button
-                          onClick={() => handleTogglePublish(blog._id, blog.published)}
+                          onClick={() => handleTogglePublish(blog.slug || blog._id, blog.published)}
                           className="text-green-600 hover:text-green-900"
                         >
                           {blog.published ? 'Unpublish' : 'Publish'}
                         </button>
                         <button
-                          onClick={() => handleDelete(blog._id)}
+                          onClick={() => handleDelete(blog.slug || blog._id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           Delete

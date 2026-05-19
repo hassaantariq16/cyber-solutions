@@ -10,9 +10,10 @@ console.log(`Compiling ${srcPath} to PDF...`);
 markdownpdf().from(srcPath).to(destPath, function () {
   console.log(`Report compiled successfully to ${destPath}`);
   
-  // Copy to FA23-BCS-118 folder as well
   const fs = require('fs');
-  fs.copyFileSync(destPath, destPathFA23);
-  console.log(`Report copied to ${destPathFA23}`);
+  if (fs.existsSync(path.dirname(destPathFA23))) {
+    fs.copyFileSync(destPath, destPathFA23);
+    console.log(`Report copied to ${destPathFA23}`);
+  }
   process.exit(0);
 });

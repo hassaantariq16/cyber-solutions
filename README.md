@@ -31,8 +31,11 @@ kubectl apply -f k8s/frontend-deployment.yaml
 ```
 
 ## Docker Hub
-Frontend image: `hassaan8345/cyber-solutions:fa23-bcs-118`
-Backend image is built from [backend/Dockerfile](backend/Dockerfile) during the pipeline.
+Frontend image: `hassaan8345/cyber-frontend:latest`
+Backend image: `hassaan8345/cyber-backend:latest`
+
+## AKS Public URL
+Live AKS frontend: `http://134.112.161.154`
 
 ## Author
 Hassaan Tariq - FA23-BCS-118

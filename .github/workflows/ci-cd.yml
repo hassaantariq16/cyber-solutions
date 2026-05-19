@@ -24,6 +24,14 @@ jobs:
       - name: Build frontend
         run: npm run build
 
+      - name: Install backend deps
+        working-directory: ./backend
+        run: npm install
+
+      - name: Validate backend source
+        working-directory: ./backend
+        run: node --check server.js && node --check routes/blogs.js && node --check models/Blog.js && node --check lib/dbConnect.js
+
       - name: Install Selenium test deps
         working-directory: ./tests/selenium
         run: npm ci
@@ -106,13 +114,11 @@ jobs:
         env:
           KUBECONFIG_DATA: ${{ secrets.KUBECONFIG }}
         run: |
-          echo "$KUBECONFIG_DATA" | base64 --decode > kubeconfig
-          export KUBECONFIG=$PWD/kubeconfig
+          echo "$KUBECONFIG_DATA" | base64 --decode > "$RUNNER_TEMP/kubeconfig"
+          echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
 
-      - name: Replace Docker Registry Placeholder
-        run: |
-          sed -i 's|<DOCKER_REGISTRY>|${{ secrets.DOCKERHUB_USERNAME }}|g' k8s/frontend-deployment.yaml
-          sed -i 's|<DOCKER_REGISTRY>|${{ secrets.DOCKERHUB_USERNAME }}|g' k8s/backend-deployment.yaml
+      - name: Verify AKS connection
+        run: kubectl get nodes
 
       - name: Deploy to AKS
         run: |

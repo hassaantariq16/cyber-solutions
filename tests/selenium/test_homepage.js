@@ -19,8 +19,10 @@ async function runTest() {
     await driver.sleep(1000);
     const nav = await driver.findElements(By.css('nav'));
     console.log('Nav elements found:', nav.length);
+    if (nav.length < 1) throw new Error('Homepage nav was not found');
     const main = await driver.findElements(By.css('main, body'));
     console.log('Main/body elements found:', main.length);
+    if (main.length < 1) throw new Error('Homepage body was not found');
     console.log('Homepage load test completed');
   } finally {
     await driver.quit();

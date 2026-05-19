@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://cybersolution:cyber1234@cluster0.lmjy4h1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cyberdb';
 
 /**
  * Global is used here to maintain a cached connection across hot reloads

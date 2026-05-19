@@ -58,13 +58,13 @@ export default function AdminBlogsPage() {
     fetchBlogs(currentPage, searchTerm, filterPublished);
   }, [currentPage, searchTerm, filterPublished]);
 
-  const handleDelete = async (blogId: string) => {
+  const handleDelete = async (blogSlug: string) => {
     if (!confirm('Are you sure you want to delete this blog?')) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/blogs/${blogId}`, {
+      const response = await fetch(`/api/blogs/${blogSlug}`, {
         method: 'DELETE',
       });
 
@@ -81,9 +81,9 @@ export default function AdminBlogsPage() {
     }
   };
 
-  const handleTogglePublish = async (blogId: string, currentPublished: boolean) => {
+  const handleTogglePublish = async (blogSlug: string, currentPublished: boolean) => {
     try {
-      const response = await fetch(`/api/blogs/${blogId}`, {
+      const response = await fetch(`/api/blogs/${blogSlug}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -280,7 +280,7 @@ export default function AdminBlogsPage() {
                     </Link>
 
                     <button
-                      onClick={() => handleTogglePublish(blog._id, blog.published)}
+                      onClick={() => handleTogglePublish(blog.slug, blog.published)}
                       className="p-2 text-gray-400 hover:text-green-400 transition-colors"
                       title={blog.published ? 'Unpublish' : 'Publish'}
                     >
@@ -290,7 +290,7 @@ export default function AdminBlogsPage() {
                     </button>
 
                     <button
-                      onClick={() => handleDelete(blog._id)}
+                      onClick={() => handleDelete(blog.slug)}
                       className="p-2 text-gray-400 hover:text-red-400 transition-colors"
                       title="Delete"
                     >

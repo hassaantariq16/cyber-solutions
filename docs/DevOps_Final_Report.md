@@ -149,10 +149,10 @@ The application is deployed on a production-ready Azure Kubernetes Service (AKS)
 ### C1. Architectural Layout & DNS Integration
 - **Stateful MongoDB**: Executed as a `StatefulSet` rather than a generic deployment to ensure write ordering, stable storage identifiers, and volume persistence.
 - **Headless DNS Service**: Mapped via `clusterIP: None` in `k8s/mongo-statefulset.yaml`. This guarantees that the Express backend container correctly resolves `mongodb://cyber-mongo:27017/cyberdb` directly within the Kubernetes network.
-- **Public LoadBalancer**: Exposes the frontend globally, enabling users to access our secure platform at a public IP on port 80.
+- **Public LoadBalancer**: Exposes the frontend globally, enabling users to access our secure platform at `http://134.112.161.154`.
 
 ### C2. AKS Deployment Verification
-The AKS pods are in `Running` state and the `LoadBalancer` service provides a globally reachable link:
+The AKS pods are in `Running` state and the `LoadBalancer` service provides a globally reachable link: `http://134.112.161.154`.
 ![AKS Cluster Pods and Services](../screenshots/11_k8s_resources.png)
 
 ---
