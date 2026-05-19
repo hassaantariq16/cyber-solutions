@@ -105,10 +105,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Kubectl
-        uses: azure/setup-kubectl@v4
-        with:
-          version: '1.29.0'
+      - name: Verify Kubectl
+        run: kubectl version --client
 
       - name: Configure kubeconfig
         env:
