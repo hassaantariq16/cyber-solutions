@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: hassaan8345/cyber-backend:latest
+          image: hassaantariq16/cyber-backend:latest
           ports:
             - containerPort: 5000
           env:
